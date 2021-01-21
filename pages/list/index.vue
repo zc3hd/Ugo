@@ -9,7 +9,7 @@
 
 
     <!-- 商品列表 -->
-    <scroll-view class="goods" scroll-y>
+    <scroll-view class="goods" scroll-y @scrolltolower="scrolltolower">
 
 
       <view class="item" @click="goDetail" v-for="item in list" :key="item.goods_id">
@@ -28,6 +28,8 @@
 
 
     </scroll-view>
+
+
   </view>
 </template>
 
@@ -39,7 +41,9 @@
         pagenum:1,
         pagesize:5,
         // 接受返回列表数据
-        list:[]
+        list:[],
+        // 初始化：表示请求没有完成！
+        flag:false,
       }
     },
     onLoad(e){
@@ -55,7 +59,11 @@
           url: '/pages/goods/index'
         })
       },
+      // 发出请求的过程
       async getList(){
+        // 表示请求没有完成！
+        this.flag = false;
+
         // 1.请求
         const {message} =  await this.$request({
           url:"/api/public/v1/goods/search",
@@ -66,8 +74,24 @@
           }
         });
 
-        // 2.获取数据，进行渲染
-        this.list = message.goods;
+        // 请求已经完成！
+         this.flag = true;
+
+        // 2.获取数据，拿到是一个数组；下一次拿到还是个数组；
+        // 上一次的数组和下一次的数组 拼接在一起  concat
+        this.list = this.list.concat(message.goods);
+      },
+      // 触底的执行函数
+      scrolltolower(){
+        // 代表上一次请求已经完成了！
+        if (this.flag) {
+          // 1.加载下一页
+          this.pagenum++;
+
+          // 2.重新发出一次请求
+          this.getList();
+        }
+
       }
     },
   }

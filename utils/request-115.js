@@ -14,7 +14,8 @@ export default function(Vue) {
 
     // 开启loading
     uni.showLoading({
-      title: "加载中..."
+      title: "加载中...",
+      // mask: true, // 加蒙层，防止触摸穿透！
     });
 
 
