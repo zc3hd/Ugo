@@ -81,6 +81,16 @@
       this.get_nav();
 
       this.get_floor();
+
+      // 开启转发功能
+      // uni.showShareMenu();
+    },
+    onShareAppMessage(){
+      return {
+        title: '来传智，学前端，成赢家!',
+        path:"/pages/index/index",
+        imageUrl:"https://ss1.bdstatic.com/70cFuXSh_Q1YnxGkpoWK1HF6hhy/it/u=1089874897,1268118658&fm=26&gp=0.jpg"
+      };
     },
     // 监听下拉刷新东西
     async onPullDownRefresh(){
