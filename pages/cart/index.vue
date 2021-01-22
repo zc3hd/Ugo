@@ -10,76 +10,46 @@
       <view class="dt">收货地址:</view>
       <view class="dd">广东省广州市天河区一珠吉</view>
     </view>
+
     <!-- 购物车 -->
     <view class="carts">
       <view class="item">
         <!-- 店铺名称 -->
         <view class="shopname">优购生活馆</view>
-        <view class="goods">
+
+
+        <view class="goods" v-for="item in list" :key="item.goods_id">
           <!-- 商品图片 -->
-          <image class="pic" src="http://static.botue.com/ugo/uploads/goods_1.jpg"></image>
+          <image class="pic" :src="item.goods_small_logo"></image>
           <!-- 商品信息 -->
           <view class="meta">
-            <view class="name">【海外购自营】黎珐(ReFa) MTG日本 CARAT铂金微电流瘦脸瘦身提拉紧致V脸美容仪 【保税仓发货】</view>
+            <view class="name">{{item.goods_name}}</view>
             <view class="price">
-              <text>￥</text>1399<text>.00</text>
+              <text>￥</text>{{item.goods_price}}<text>.00</text>
             </view>
             <!-- 加减 -->
             <view class="amount">
               <text class="reduce">-</text>
-              <input type="number" value="1" class="number">
+              <input type="number" :value="item.goods_number" class="number">
               <text class="plus">+</text>
             </view>
           </view>
           <!-- 选框 -->
           <view class="checkbox">
-            <icon type="success" size="20" color="#ea4451"></icon>
+            <!-- 发现：购买状态和每一个商品绑定在一起的！需要一个属性名值描述购买状态！ -->
+            <!--      需要增加一个属性值，怎么增加？把商品添加到购物车！从那个地方补充这个属性！ -->
+            <icon type="success" size="20" :color="item.goods_buy?'#ea4451':'#ccc'"></icon>
           </view>
         </view>
-        <view class="goods">
-          <!-- 商品图片 -->
-          <image class="pic" src="http://static.botue.com/ugo/uploads/goods_2.jpg"></image>
-          <!-- 商品信息 -->
-          <view class="meta">
-            <view class="name">【海外购自营】黎珐(ReFa) MTG日本 CARAT铂金微电流瘦脸瘦身提拉紧致V脸美容仪 【保税仓发货】</view>
-            <view class="price">
-              <text>￥</text>1399<text>.00</text>
-            </view>
-            <!-- 加减 -->
-            <view class="amount">
-              <text class="reduce">-</text>
-              <input type="number" value="1" class="number">
-              <text class="plus">+</text>
-            </view>
-          </view>
-          <!-- 选框 -->
-          <view class="checkbox">
-            <icon type="success" size="20" color="#ea4451"></icon>
-          </view>
-        </view>
-        <view class="goods">
-          <!-- 商品图片 -->
-          <image class="pic" src="http://static.botue.com/ugo/uploads/goods_5.jpg"></image>
-          <!-- 商品信息 -->
-          <view class="meta">
-            <view class="name">【海外购自营】黎珐(ReFa) MTG日本 CARAT铂金微电流瘦脸瘦身提拉紧致V脸美容仪 【保税仓发货】</view>
-            <view class="price">
-              <text>￥</text>1399<text>.00</text>
-            </view>
-            <!-- 加减 -->
-            <view class="amount">
-              <text class="reduce">-</text>
-              <input type="number" value="1" class="number">
-              <text class="plus">+</text>
-            </view>
-          </view>
-          <!-- 选框 -->
-          <view class="checkbox">
-            <icon type="success" size="20" color="#ccc"></icon>
-          </view>
-        </view>
+
+
+
+
       </view>
     </view>
+
+
+
     <!-- 其它 -->
     <view class="extra">
       <label class="checkall">
@@ -96,7 +66,21 @@
 
 <script>
   export default {
-    
+    data(){
+      return {
+        list:[]
+      }
+    },
+    // 注意：
+    // 1.cart页面路径打开后：执行onLoad();  onShow();
+    // 2.从这个cart路径去到其他路径,cart页面其实是隐藏了！不是消失了！
+    // 3.从其他路径页面再次回到cart路径，onLoad将不会执行！但是onShow()执行的！
+    // onLoad(){
+    //   this.list = uni.getStorageSync("list");
+    // },
+    onShow(){
+      this.list = uni.getStorageSync("list");
+    }
   }
 </script>
 

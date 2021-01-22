@@ -82,7 +82,9 @@
           goods_name:this.data.goods_name,
           goods_price:this.data.goods_price,
           goods_small_logo:this.data.goods_small_logo,
-          goods_number:1
+          goods_number:1,
+          // 补充属性：添加这个商品默认就是要买的！
+          goods_buy:true,
         };
 
         // 3.判断 one是否重复；
@@ -98,11 +100,9 @@
             flag=true;
             break;
           }
-
         }
 
-
-        //  3.3 看flag值
+        //   3.3 看flag值
         if (flag==false) {
           // 证明上面循环没有一个商品和one是重复
           // one是新商品
