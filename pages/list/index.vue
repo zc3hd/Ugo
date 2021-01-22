@@ -12,7 +12,7 @@
     <scroll-view class="goods" scroll-y @scrolltolower="scrolltolower">
 
 
-      <view class="item" @click="goDetail" v-for="item in list" :key="item.goods_id">
+      <view class="item" @tap="goDetail(item.goods_id)" v-for="item in list" :key="item.goods_id">
         <!-- 商品图片 -->
         <image class="pic" :src="item.goods_small_logo"></image>
         <!-- 商品信息 -->
@@ -54,9 +54,9 @@
       this.getList();
     },
     methods: {
-      goDetail () {
+      goDetail (id) {
         uni.navigateTo({
-          url: '/pages/goods/index'
+          url: '/pages/goods/index?id='+id,
         })
       },
       // 发出请求的过程

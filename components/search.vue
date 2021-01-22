@@ -25,7 +25,7 @@
 
       <!-- 现在：正在搜索的话，显示建议列表 -->
       <scroll-view scroll-y class="result" v-if="list.length">
-        <navigator url="/pages/goods/index" v-for="(item,index) in list" :key="index">{{item.goods_name}}</navigator>
+        <navigator :url="'/pages/goods/index?id='+item.goods_id" v-for="(item,index) in list" :key="index">{{item.goods_name}}</navigator>
       </scroll-view>
 
 
