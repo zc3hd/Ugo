@@ -2,13 +2,22 @@
   <view class="wrapper">
     <!-- 收货信息 -->
     <view class="shipment">
-      <view class="dt">收货人: </view>
-      <view class="dd meta">
-        <text class="name">刘德华</text>
-        <text class="phone">13535337057</text>
-      </view>
-      <view class="dt">收货地址:</view>
-      <view class="dd">广东省广州市天河区一珠吉</view>
+
+
+      <button type="primary" @tap="getAddr" v-if="addr==null">获取收货地址</button>
+
+
+      <block v-else>
+        <view class="dt">收货人: </view>
+        <view class="dd meta">
+          <text class="name">{{addr.userName}}</text>
+          <text class="phone">{{addr.telNumber}}</text>
+        </view>
+        <view class="dt">收货地址:</view>
+        <view class="dd">{{addr.detailAddr}}</view>
+      </block>
+
+
     </view>
 
     <!-- 购物车 -->
@@ -53,13 +62,15 @@
     <!-- 其它 -->
     <view class="extra">
       <label class="checkall">
-        <icon type="success" color="#ccc" size="20"></icon>
+        <icon type="success" 
+          :color="is?'#ea4451':'#ccc'" size="20"
+          @tap="changeAll"></icon>
         全选
       </label>
       <view class="total">
-        合计: <text>￥</text><label>14110</label><text>.00</text>
+        合计: <text>￥</text><label>{{sum}}</label><text>.00</text>
       </view>
-      <view class="pay">结算(3)</view>
+      <view class="pay">结算({{ck_list.length}})</view>
     </view>
   </view>
 </template>
@@ -68,7 +79,37 @@
   export default {
     data(){
       return {
-        list:[]
+        list:[],
+        addr:null,
+      }
+    },
+    computed:{
+      ck_list:function () { 
+        let arr = [];
+
+        // 循环遍历，把选中商品筛选出来；
+        this.list.forEach(function (item,index) { 
+          if (item.goods_buy) {
+            arr.push(item);
+          }
+        })
+
+        return arr;
+      },
+      // 因为上面三元表达式，第一表达式在uni-app只能写变量，
+      // 需要把比较表达式单独设置在一个计算属性上;
+      is:function () { 
+        return this.ck_list.length==this.list.length;
+      },
+      // 总价
+      sum:function () {
+        let numb = 0;
+
+        this.ck_list.forEach(function (item,index) {  
+          numb += item.goods_number * item.goods_price;
+        });
+
+        return numb;
       }
     },
     // 注意：
@@ -104,7 +145,35 @@
 
         // 3.数据状态发生改变后，记得要存回本地！
         uni.setStorageSync("list",this.list);
-      }
+      },
+      // 全选改变：
+      changeAll(){
+        // 1.获取全选的状态
+        let key = this.is;
+
+        // 2.取反
+        key = !key;
+
+        // 3.把key的值赋值给每一个商品
+        this.list.forEach(function (item,index) { 
+          item.goods_buy = key;
+        });
+
+        // 4.储存回本地
+        uni.setStorageSync("list",this.list);
+
+      },
+      // 获取地址
+      async getAddr(){
+        // API获取地址数据
+        let [err,res] = await uni.chooseAddress();
+        
+        // 拼接详细的地址
+        res.detailAddr = res.provinceName + res.cityName + res.countyName + res.detailInfo;
+
+        // 赋值初始化数据
+        this.addr = res;
+      },
     }
   }
 </script>
