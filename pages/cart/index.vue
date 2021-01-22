@@ -18,7 +18,7 @@
         <view class="shopname">优购生活馆</view>
 
 
-        <view class="goods" v-for="item in list" :key="item.goods_id">
+        <view class="goods" v-for="(item,index) in list" :key="item.goods_id">
           <!-- 商品图片 -->
           <image class="pic" :src="item.goods_small_logo"></image>
           <!-- 商品信息 -->
@@ -29,16 +29,16 @@
             </view>
             <!-- 加减 -->
             <view class="amount">
-              <text class="reduce">-</text>
+              <text class="reduce" @tap="changeNumb(-1,index)">-</text>
               <input type="number" :value="item.goods_number" class="number">
-              <text class="plus">+</text>
+              <text class="plus" @tap="changeNumb(+1,index)">+</text>
             </view>
           </view>
           <!-- 选框 -->
           <view class="checkbox">
             <!-- 发现：购买状态和每一个商品绑定在一起的！需要一个属性名值描述购买状态！ -->
             <!--      需要增加一个属性值，怎么增加？把商品添加到购物车！从那个地方补充这个属性！ -->
-            <icon type="success" size="20" :color="item.goods_buy?'#ea4451':'#ccc'"></icon>
+            <icon type="success" size="20" :color="item.goods_buy?'#ea4451':'#ccc'" @tap="changeBuy(index)"></icon>
           </view>
         </view>
 
@@ -80,6 +80,31 @@
     // },
     onShow(){
       this.list = uni.getStorageSync("list");
+    },
+    methods:{
+      // 改变数量
+      changeNumb(step,index){
+        // 判断当点击是-，且商品数量已经为1；
+        if (step==-1&&this.list[index].goods_number==1) {
+          return;
+        }
+
+        // 数量发生改变
+        this.list[index].goods_number = this.list[index].goods_number + step;
+
+        // 数组中数据发生改变，和本地进行同步
+        uni.setStorageSync("list",this.list);
+      },
+      // 改变状态
+      changeBuy(index){
+        // 1.index:当前商品在数组中下标
+        // 2.找到对应商品的；把原来的状态进行对立面的改变
+        this.list[index].goods_buy = !this.list[index].goods_buy;
+
+
+        // 3.数据状态发生改变后，记得要存回本地！
+        uni.setStorageSync("list",this.list);
+      }
     }
   }
 </script>
