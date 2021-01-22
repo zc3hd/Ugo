@@ -3,8 +3,12 @@
     <!-- 个人资料 -->
     <view class="profile">
       <view class="meta">
-        <image class="avatar" src="http://static.botue.com/ugo/uploads/monkey.png"></image>
-        <text class="nickname">孙悟空</text>
+        <!-- <image class="avatar" src="http://static.botue.com/ugo/uploads/monkey.png"></image> -->
+        <!-- <text class="nickname">孙悟空</text> -->
+
+
+        <open-data type="userAvatarUrl" class="avatar"></open-data>
+        <open-data type="userNickName" class="nickname"></open-data>
       </view>
     </view>
     <!-- 统计 -->
@@ -38,15 +42,21 @@
     </view>
     <!-- 其它 -->
     <view class="extra">
-      <view class="item icon-arrow">联系客服</view>
-      <button class="item icon-arrow">意见反馈</button>
+      <view class="item icon-arrow" @tap="mkphone">联系客服</view>
+      <button open-type="feedback" class="item icon-arrow">意见反馈</button>
     </view>
   </view>
 </template>
 
 <script>
   export default {
-    
+    methods:{
+      mkphone(){
+        uni.makePhoneCall({
+          phoneNumber:"10086"
+        });
+      }
+    }
   }
 </script>
 
@@ -70,9 +80,11 @@
     .meta {
 
       .avatar {
+        display: block;
         width: 140rpx;
         height: 140rpx;
         border-radius: 50%;
+        overflow: hidden;
         border: 2rpx solid #fff;
       }
 
