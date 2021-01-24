@@ -70,7 +70,7 @@
       <view class="total">
         合计: <text>￥</text><label>{{sum}}</label><text>.00</text>
       </view>
-      <view class="pay">结算({{ck_list.length}})</view>
+      <view class="pay" @tap="addOrder">结算({{ck_list.length}})</view>
     </view>
   </view>
 </template>
@@ -174,6 +174,63 @@
         // 赋值初始化数据
         this.addr = res;
       },
+      // 结算添加订单
+      async addOrder(){
+        // 业务：不管用什么框架，都是这样的业务！这个是以后做支付正式前面的流程；
+        // 验证：
+        //   验证不通过，给相应提醒！
+        //    1.收货地址
+        if (this.addr==null) {
+          uni.showToast({title:"无收货地址!",icon:"none"});
+          return;
+        }
+
+        //    2.购买商品
+        if (this.ck_list.length==0) {
+          uni.showToast({title:"无购物的商品!",icon:"none"});
+          return;
+        }
+
+
+        //    3.必须有当前使用小程序这个用户登录状态  获取本地token;
+        if (!uni.getStorageSync("token")) {
+          uni.showToast({title:"当前用户没有登录!",icon:"none"});
+          // 接下来小程序得控制用户去专门页面登录！
+          uni.navigateTo({
+            url:"/pages/auth/index"
+          });
+
+          return;
+        }
+
+
+
+
+        //   验证通过，就可以写异步请求、创建订单；
+        const {message} =  await this.$request({
+          url:"/api/public/v1/my/orders/create",
+          method:"POST",
+          header:{
+            Authorization:uni.getStorageSync("token"),  // 用户登录信息
+          },
+          data:{
+            // 订单总价
+            order_price:this.sum,
+            // 收货地址
+            consignee_addr:this.addr.detailAddr,
+            // 要购买的商品
+            goods:this.ck_list
+          }
+        });
+
+         // 专门去展示所有订单一个页面
+        if (message) {
+          uni.navigateTo({
+            url:"/pages/order/index"
+          });
+        }
+
+      }
     }
   }
 </script>

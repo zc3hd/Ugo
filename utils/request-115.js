@@ -9,15 +9,13 @@ export default function(Vue) {
   Vue.prototype.$request = async function(params) {
     // params:
     //    形参，接受实参是的数据
-    //    实参：对象；
-
+    //    实参：对象
 
     // 开启loading
     uni.showLoading({
       title: "加载中...",
       // mask: true, // 加蒙层，防止触摸穿透！
     });
-
 
     //自己要求：
     //    1.统一配置请求根路径
@@ -26,14 +24,14 @@ export default function(Vue) {
     //    2.后台返回数据格式提前处理
     let [err, res] = await uni.request({
       url: base + params.url,
-      data: params.data
+      data: params.data,
+      method: params.method,
+      header: params.header,
     });
 
 
     // 关闭loading效果
     uni.hideLoading();
-
-
 
     return res.data;
   };
